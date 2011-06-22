@@ -1,0 +1,16 @@
+#{extends 'main.html' /}
+
+#{set 'moreScripts'}
+  <script type="text/javascript">
+  // Globals
+  window.ROUTES = {
+    WSopen: "@@{Screen.open(screen)}"
+  };
+  </script>
+  #{script "main.js" /}
+  #{get 'moreScripts' /}
+#{/set}
+
+<div id="box" class="box" style="top: 20px; left: 20px">
+  <img src="http://www.w3.org/html/logo/img/html5-display.png" alt="HTML5" />
+</div>

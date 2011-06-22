@@ -1,0 +1,6 @@
+.box {
+  position: absolute;
+  top: 0; 
+  left: 0;
+  border: 4px dashed #ccc;
+}

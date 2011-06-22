@@ -1,0 +1,13 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<form action="@{Application.screen()}" method="GET">
+  <p>
+    <label for="screen">Screen:</label>
+    <input type="text" id="screen" name="screen" value="${flash['screen']}" />
+    <span class="error">#{error "screen" /}</span>
+  </p>
+  <p>
+    <button type="submit">GO</button>
+  </p>
+</form>
