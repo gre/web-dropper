@@ -1,8 +1,21 @@
+body {
+  background: #eee;
+}
+
 .box {
   position: absolute;
   top: 0; 
   left: 0;
   border: 4px dashed #ccc;
+  padding: 15px;
+  background: white;
+}
+
+.box:hover a.scale, .box:hover a.rotate {
+  opacity: 1;
+}
+.box a.scale, .box a.rotate {
+  opacity: 0;
 }
 
 .box a.scale {

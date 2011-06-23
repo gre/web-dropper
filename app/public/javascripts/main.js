@@ -2,7 +2,7 @@
 
 $(document).ready(function(){
   
-  var socket = new WebSocket(ROUTES.WSopen);
+  var socket;
   
   var transformToText = function(o) {
     with(o) {
@@ -20,19 +20,24 @@ $(document).ready(function(){
       rotate: 0
     };
     
-    self.updateBoxTransform = function(o) {
-      self.transform = o.transform;
-      self.node.css('transform', transformToText(o.transform));
+    self.renderTransform = function() {
+      self.node.css('transform', transformToText(self.transform));
+    }
+    
+    self.setBoxTransform = function(transform) {
+      self.transform = transform;
+      self.renderTransform();
     }
     
     self.send = function(o) {
       o.boxId = self.id;
       var str = JSON.stringify(o);
+      console.log(str)
       socket.send(str);
     }
     
-    self.sendTransform = function(boxId, t) {
-      self.send({ transform: t });
+    self.sendTransform = function() {
+      self.send({ transform: self.transform });
     }
     
     self.getCenterPosition = function() {
@@ -91,7 +96,7 @@ $(document).ready(function(){
         self.transform.pos.x += dragx;
         self.transform.pos.y += dragy;
       }
-      currentBox.sendTransform("box", self.transform); // todo : don't spam too much!
+      self.sendTransform(); // todo : don't spam too much!
     }
     
     self.node.append('<a class="scale" />').append('<a class="rotate" />');
@@ -108,21 +113,7 @@ $(document).ready(function(){
     return _.detect(boxes, function(b){ return b.node[0] == node[0] });
   }
   
-  var box = $('#box');
-  
-  socket.onmessage = function(e) {
-    if(!e.data) return;
-    var o = JSON.parse(e.data);
-    var box = findBoxById(o.boxId);
-    if(!box) return;
-    if(o.transform) box.updateBoxTransform(o);
-  }
-  
   var currentBox = null;
-  var last = null; // [ x , y ]
-  var mode = null; // move , rotate , scale
-  
-  
   $(document).bind('mousedown', function(e){
     var target = $(e.target);
     var node = target.is('.box') ? target : target.parents('.box:last');
@@ -141,6 +132,24 @@ $(document).ready(function(){
     if(currentBox) currentBox.onDrag(e);
     currentBox = null;
   });
+  
+  var b;
+  b = findBoxById("image_html5");
+  b.transform.pos = { x: 20, y: 20 };
+  b.renderTransform();
+  
+  b = findBoxById("video_same");
+  b.transform.pos = { x: 300, y: 20 };
+  b.renderTransform();
+
+  socket = new WebSocket(ROUTES.WSopen);
+  socket.onmessage = function(e) {
+    if(!e.data) return;
+    var o = JSON.parse(e.data);
+    var box = findBoxById(o.boxId);
+    if(!box) return;
+    if(o.transform) box.setBoxTransform(o.transform);
+  }
 
 });
 
