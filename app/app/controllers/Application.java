@@ -6,8 +6,6 @@ import play.mvc.*;
 
 import java.util.*;
 
-import models.*;
-
 public class Application extends Controller {
 
     public static void index() {
@@ -15,7 +13,7 @@ public class Application extends Controller {
     }
     
     public static void screen(
-            @Required @MinSize(5) @MaxSize(50) @Match(value="[0-9a-zA-Z]+", message="Must be only alphanumeric characters.")
+            @Required @MinSize(3) @MaxSize(50) @Match(value="[0-9a-zA-Z]+", message="Must be only alphanumeric characters.")
             String screen ) {
         if(Validation.hasErrors()) {
             validation.keep();

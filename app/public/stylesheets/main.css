@@ -4,3 +4,22 @@
   left: 0;
   border: 4px dashed #ccc;
 }
+
+.box a.scale {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background: rgba(250,0,0,0.5);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.box a.rotate {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,250,0,0.5);
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}

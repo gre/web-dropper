@@ -1,6 +1,10 @@
 package controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import play.Logger;
+import play.libs.F;
 import play.mvc.Http.*;
 import play.mvc.WebSocketController;
 
@@ -16,12 +20,16 @@ public class Screen extends WebSocketController {
             this.data = data;
         }
     }
-    
-    final static ArchivedEventStream<ScreenEvent> connections = new ArchivedEventStream<ScreenEvent>(100);
+
+    final static Map<String, ArchivedEventStream<ScreenEvent>> mapStream = new HashMap<String, ArchivedEventStream<ScreenEvent>>();
     
     public static void open(String screen) {
-        
-        EventStream<ScreenEvent> eventStream = connections.eventStream();
+    	ArchivedEventStream<ScreenEvent> stream = mapStream.get(screen);
+    	if(stream==null) {
+    		stream = new ArchivedEventStream<ScreenEvent>(100);
+    		mapStream.put(screen, stream);
+    	}
+        EventStream<ScreenEvent> eventStream = stream.eventStream();
         
         // Loop while the socket is open
         while(inbound.isOpen()) {
@@ -31,7 +39,7 @@ public class Screen extends WebSocketController {
                 ));
 
             for(String message: TextFrame.match(e._1)) {
-                connections.publish(new ScreenEvent(message));
+                stream.publish(new ScreenEvent(message));
             }
             
             for(ScreenEvent event: ClassOf(ScreenEvent.class).match(e._2)) {
